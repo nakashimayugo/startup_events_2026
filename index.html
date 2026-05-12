@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>スタートアップ イベント一覧 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+
+  :root {
+    --bg: #0d0d0d;
+    --surface: #141414;
+    --surface2: #1a1a1a;
+    --border: #242424;
+    --accent: #c8ff00;
+    --accent2: #ff4400;
+    --accent3: #00c8ff;
+    --text: #efefef;
+    --muted: #5a5a5a;
+    --done-bg: #111;
+    --done-text: #3a3a3a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 48px 28px 64px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 52px;
+    padding-left: 22px;
+    border-left: 3px solid var(--accent);
+  }
+
+  header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 7vw, 72px);
+    letter-spacing: 0.05em;
+    color: var(--text);
+    line-height: 0.95;
+  }
+
+  header h1 span { color: var(--accent); }
+
+  header p {
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .dot-large { background: var(--accent); }
+  .dot-medium { background: var(--accent3); }
+  .dot-small { background: #888; }
+  .dot-done { background: #2a2a2a; border: 1px solid #3a3a3a; }
+
+  /* Section headers */
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 40px 0 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  /* Grid */
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2px;
+  }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px 24px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.18s, border-color 0.18s;
+  }
+
+  .card:hover { transform: translateY(-2px); border-color: #333; }
+
+  .card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    height: 2px; width: 100%;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease;
+  }
+
+  .card:hover::after { transform: scaleX(1); }
+
+  .card.large::after { background: var(--accent); }
+  .card.medium::after { background: var(--accent3); }
+  .card.small::after { background: #888; }
+  .card.done { background: var(--done-bg); opacity: 0.55; }
+  .card.done::after { background: #333; }
+  .card.done:hover { opacity: 0.75; }
+
+  /* Status badge */
+  .status-badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    margin-bottom: 14px;
+  }
+
+  .badge-large { background: var(--accent); color: #000; }
+  .badge-medium { background: var(--accent3); color: #000; }
+  .badge-small { background: #333; color: #aaa; border: 1px solid #444; }
+  .badge-done { background: #1e1e1e; color: #3a3a3a; border: 1px solid #2a2a2a; }
+  .badge-imminent { background: var(--accent2); color: #fff; }
+
+  /* Card content */
+  .card-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.05em;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 3px;
+  }
+
+  .card.done .card-name { color: #333; }
+
+  .card-type {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    line-height: 1.4;
+  }
+
+  .info-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    font-size: 11.5px;
+    line-height: 1.5;
+  }
+
+  .info-label {
+    color: var(--muted);
+    min-width: 52px;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .info-val { color: #ccc; }
+  .card.done .info-val { color: #333; }
+
+  .links {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .link-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .link-label {
+    font-size: 9px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    min-width: 44px;
+    padding-top: 1px;
+    flex-shrink: 0;
+  }
+
+  .link-row a {
+    font-size: 11px;
+    color: #7aaa00;
+    text-decoration: none;
+    word-break: break-all;
+    line-height: 1.4;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .card.medium .link-row a { color: var(--accent3); }
+  .card.small .link-row a { color: #888; }
+  .card.done .link-row a { color: #2e2e2e; pointer-events: none; }
+
+  .link-row a:hover { border-color: currentColor; }
+
+  .no-url { font-size: 11px; color: #333; font-style: italic; }
+
+  footer {
+    margin-top: 56px;
+    font-size: 10px;
+    color: #3a3a3a;
+    letter-spacing: 0.08em;
+    border-top: 1px solid #1e1e1e;
+    padding-top: 14px;
+  }
+
+  @media (max-width: 640px) {
+    .events-grid { grid-template-columns: 1fr; }
+    body { padding: 28px 16px 48px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>STARTUP <span>EVENTS</span><br>JAPAN 2026</h1>
+  <p>主要スタートアップイベント一覧 / 公式URL・開催日程・申込リンク（大規模〜中小規模）</p>
+</header>
+
+<div class="legend">
+  <div class="legend-item"><div class="dot dot-large"></div> 大規模（500人超）</div>
+  <div class="legend-item"><div class="dot dot-medium"></div> 中規模（100〜500人）</div>
+  <div class="legend-item"><div class="dot dot-small"></div> 小規模・ピッチ特化（〜100人）</div>
+  <div class="legend-item"><div class="dot dot-done"></div> 2026年内開催済み</div>
+</div>
+
+<!-- ===== 今後開催 ===== -->
+<div class="section-label">今後開催予定</div>
+<div class="events-grid">
+
+  <!-- B Dash Camp -->
+  <div class="card large">
+    <span class="status-badge badge-imminent">▶ 2026.5.20〜22 直近！</span>
+    <div class="card-name">B DASH CAMP<br>2026 SPRING</div>
+    <div class="card-type">大規模 / 招待制カンファレンス</div>
+    <div class="info-row"><span class="info-label">日程</span><span class="info-val">2026年5月20日（水）〜22日（金）</span></div>
+    <div class="info-row"><span class="info-label">会場</span><span class="info-val">札幌市内</span></div>
+    <div class="info-row"><span class="info-label">形式</span><span class="info-val">完全招待制（自薦・推薦で参加申請可）</span></div>
+    <div class="links">
+      <div class="link-row"><span class="link-label">TOP</span><a href="https://camp.bdashventures.com/" target="_blank">camp.bdashventures.com</a></div>
+      <div class="link-row"><span class="link-label">申込</span><a href="https://camp.bdashventures.com/sapporo/" target="_blank">camp.bdashventures.com/sapporo/（招待・自薦フォーム）</a></div>
+    </div>
+  </div>
+
+  <!-- IVS 2026 -->
+  <div class="card large">
+    <span class="status-badge badge-large">大規模 / 2026.7.1〜3</span>
+    <div class="card-name">IVS 2026</div>
+    <div class="card-type">大規模 / スタートアップカンファレンス（国内最大規模）</div>
+    <div class="info-row"><span class="info-label">日程</span><span class="info-val">2026年7月1日（水）〜3日（金）</span></div>
+    <div class="info-row"><span class="info-label">会場</span><span class="info-val">みやこめっせ・ホテルオークラ京都 他（京都）</span></div>
+    <div class="info-row"><span class="info-label">形式</span><span class="info-val">一般PASS販売中 / IVS COREエリアは招待制</span></div>
+    <div class="links">
+      <div class="link-row"><span class="link-label">TOP</span><a href="https://www.ivs.events/" target="_blank">ivs.events</a></div>
+      <div class="link-row"><span class="link-label">申込</span><a href="https://www.ivs.events/" target="_blank">ivs.events（PASS販売中）</a></div>
+    </div>
+  </div>
+
+  <!-- ICC KYOTO 2026 -->
+  <div class="card large">
+    <span class="status-badge badge-large">大規模 / 2026.8.31〜9.3</span>
+    <div class="card-name">ICC SUMMIT<br>KYOTO 2026</div>
+    <div class="card-type">大規模 / エグゼクティブカンファレンス（審査制）</div>
+    <div class="info-row"><span class="info-label">日程</span><span class="info-val">2026年8月31日（月）〜9月3日（木）</span></div>
+    <div class="info-row"><span class="info-label">会場</span><span class="info-val">ウェスティン都ホテル京都 他</span></div>
+    <div class="info-row"><span class="info-label">形式</span><span class="info-val">事前審査制 / 参加費40万円〜</span></div>
+    <div class="links">
+      <div class="link-row"><span class="link-label">TOP</span><a href="https://industry-co-creation.com/" target="_blank">industry-co-creation.com</a></div>
+      <div class="link-row"><span class="link-label">申込</span><a href="https://industry-co-creation.com/events/icc-kyoto-2026" target="_blank">industry-co-creation.com/events/icc-kyoto-2026</a></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== 中規模・小規模（今後） ===== -->
+<div class="section-label">中小規模・ピッチ特化（今後開催予定 / 次回時期は要確認）</div>
+<div class="events-grid">
+
+  <!-- Startup Aquarium -->
+  <div class="card medium">
+    <span class="status-badge badge-medium">中規模 / 年1回開催</span>
+    <div class="card-name">STARTUP AQUARIUM<br>（Coral Capital）</div>
+    <div class="card-type">中規模 / スタートアップキャリアフェア</div>
+    <div class="info-row"><span class="info-label">概要</span><span class="info-val">Coral Capital主催。スタートアップ転職・副業志望者と採用企業のマッチング。登壇セッション＋1on1面談</span></div>
+    <div class="info-row"><span class="info-label">対象</span><span class="info-val">スタートアップキャリアに関心がある人（転職検討者〜情報収集層）</span></div>
+    <div class="info-row"><span class="info-label">次回</span><span class="info-val">2026年内開催予定（日程未公表。例年春〜初夏）</span></div>
+    <div class="links">
+      <div class="link-row"><span class="link-label">TOP</span><a href="https://coralcap.co/event/startup-aquarium/" target="_blank">coralcap.co/event/startup-aquarium/</a></div>
+      <div class="link-row"><span class="link-label">申込</span><a href="https://coralcap.co/event/startup-aquarium/" target="_blank">公式ページ（開催時に告知）</a></div>
+    </div>
+  </div>
+
+  <!-- Startup Career Fair -->
+  <div class="card medium">
+    <span class="status-badge badge-medium">中規模 / 年1回開催</span>
+    <div class="card-name">STARTUP<br>CAREER FAIR</div>
+    <div class="card-type">中規模 / スタートアップキャリアイベント（東京都主催）</div>
+    <div class="info-row"><span class="info-label">概要</span><span class="info-val">東京都×スタートアップエコシステム協会主催。転職・副業志望者向けピッチ＋個別相談会</span></div>
+    <div class="info-row"><span class="info-label">会場</span><span class="info-val">Tokyo Innovation Base（丸の内）</span></div>
+    <div class="info-row"><span class="info-label">次回</span><span class="info-val">2026年内開催予定（例年春。日程は要公式確認）</span></div>
+    <div class="links">
+      <div class="link-row"><span class="link-label">TOP</span><a href="https://startupcareer2026.com/" target="_blank">startupcareer2026.com</a></div>
+      <div class="link-row"><span class="link-label">申込</span><a href="https://startupcareer2026.com/" target="_blank">公式ページ（開催時に告知）</a></div>
+    </div>
+  </div>
+
+  <!-- Japan Innovation Day -->
+  <div class="card medium">
+    <span class="status-badge badge-medium">中規模 / 年1回</span>
+    <div class="card-name">JAPAN INNOVATION<br>DAY（JID）</div>
+    <div class="card-type">中規模 / スタートアップ展示＋ピッチ / ASCII STARTUP主催</div>
+    <div class="info-row"><span class="info-label">概要</span><span class="info-val">ASCII STARTUPプロデュース。国内外スタートアップの展示・ピッチ・セッション。XTC JAPAN同時開催</span></div>
+    <div class="info-row"><span class="info-label">会場</span><span class="info-val">東京都立産業貿易センター浜松町館（例年）</span></div>
+    <div class="info-row"><span class="info-label">次回</span><span class="info-val">JID 2027は未発表（JID 2026は3/3開催済み）</span></div>
+    <div class="links">
+      <div class="link-row"><span class="link-label">TOP</span><a href="https://jid-ascii.com/" target="_blank">jid-ascii.com</a></div>
+      <div class="link-row"><span class="link-label">申込</span><a href="https://jid-ascii.com/" target="_blank">公式ページ（次回開催時に告知）</a></div>
+    </div>
+  </div>
+
+  <!-- XTC JAPAN -->
+  <div class="card small">
+    <span class="status-badge badge-small">小規模 / ピッチ特化</span>
+    <div class="card-name">XTC JAPAN</div>
+    <div class="card-type">小規模 / グローバルディープテックピッチコンテスト</div>
+    <div class="info-row"><span class="info-label">概要</span><span class="info-val">世界120ヶ国規模のスタートアップコンテストXTCの日本予選。10社がピッチ。優勝者は世界大会へ</span></div>
+    <div class="info-row"><span class="info-label">対象</span><span class="info-val">ディープテック・テクノロジースタートアップ（全ステージ）</span></div>
+    <div class="info-row"><span class="info-label">次回</span><span class="info-val">XTC JAPAN 2027は未発表（XTC JAPAN 2026は3/3開催済み）</span></div>
+    <div class="links">
+      <div class="link-row"><span class="link-label">TOP</span><a href="https://xtc-japan.org/" target="_blank">xtc-japan.org</a></div>
+      <div class="link-row"><span class="link-label">申込</span><a href="https://xtc-japan.org/" target="_blank">公式ページ（次回エントリー受付時）</a></div>
+    </div>
+  </div>
+
+  <!-- Plug and Play Japan -->
+  <div class="card small">
+    <span class="status-badge badge-small">小規模 / 随時開催</span>
+    <div class="card-name">PLUG AND PLAY<br>JAPAN イベント</div>
+    <div class="card-type">小規模 / ピッチ＋ネットワーキング（不定期・複数回）</div>
+    <div class="info-row"><span class="info-label">概要</span><span class="info-val">グローバルアクセラレーターが主催。グローバルスタートアップの日本進出ピッチや業界別セッションを不定期開催。無料多め</span></div>
+    <div class="info-row"><span class="info-label">会場</span><span class="info-val">Plug and Play Japan オフィス（渋谷道玄坂）</span></div>
+    <div class="info-row"><span class="info-label">次回</span><span class="info-val">随時（公式サイト・SNSで告知）</span></div>
+    <div class="links">
+      <div class="link-row"><span class="link-label">TOP</span><a href="https://japan.plugandplaytechcenter.com/" target="_blank">japan.plugandplaytechcenter.com</a></div>
+      <div class="link-row"><span class="link-label">申込</span><a href="https://japan.plugandplaytechcenter.com/events/" target="_blank">japan.plugandplaytechcenter.com/events/</a></div>
+    </div>
+  </div>
+
+  <!-- NIKKEI THE PITCH -->
+  <div class="card small">
+    <span class="status-badge badge-small">小規模 / 随時開催</span>
+    <div class="card-name">NIKKEI<br>THE PITCH</div>
+    <div class="card-type">小規模 / 日経主催ピッチプラットフォーム</div>
+    <div class="info-row"><span class="info-label">概要</span><span class="info-val">日本経済新聞社が主催する全国のスタートアップ・アトツギベンチャー向けピッチプラットフォーム。複数回・地域分散型で開催</span></div>
+    <div class="info-row"><span class="info-label">会場</span><span class="info-val">全国各地（東京・大阪・福岡など）</span></div>
+    <div class="info-row"><span class="info-label">次回</span><span class="info-val">随時開催（公式サイトのイベントカレンダーで確認）</span></div>
+    <div class="links">
+      <div class="link-row"><span class="link-label">TOP</span><a href="https://pitch.nikkei.com/" target="_blank">pitch.nikkei.com</a></div>
+      <div class="link-row"><span class="link-label">申込</span><a href="https://pitch.nikkei.com/event-information/" target="_blank">pitch.nikkei.com/event-information/</a></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== 2026年内開催済み ===== -->
+<div class="section-label">2026年内 開催済み</div>
+<div class="events-grid">
+
+  <div class="card done large">
+    <span class="status-badge badge-done">✓ 終了 2026.4.27〜29</span>
+    <div class="card-name">SUSHI TECH<br>TOKYO 2026</div>
+    <div class="card-type">大規模 / グローバルイノベーションカンファレンス（東京都主催）</div>
+    <div class="info-row"><span class="info-label">会場</span><span class="info-val">東京ビッグサイト 西1〜4ホール</span></div>
+    <div class="links">
+      <div class="link-row"><span class="link-label">TOP</span><a href="https://sushitech-startup.metro.tokyo.lg.jp/" target="_blank">sushitech-startup.metro.tokyo.lg.jp</a></div>
+    </div>
+  </div>
+
+  <div class="card done large">
+    <span class="status-badge badge-done">✓ 終了 2026.4.15〜16</span>
+    <div class="card-name">STARTUP JAPAN<br>EXPO 2026</div>
+    <div class="card-type">大規模 / スタートアップ展示会（Sansan Eight主催）</div>
+    <div class="info-row"><span class="info-label">会場</span><span class="info-val">幕張メッセ 国際展示場ホール7・8</span></div>
+    <div class="links">
+      <div class="link-row"><span class="link-label">TOP</span><a href="https://eight-event.8card.net/lp/startup-japan/2026/" target="_blank">eight-event.8card.net/lp/startup-japan/2026/</a></div>
+    </div>
+  </div>
+
+  <div class="card done large">
+    <span class="status-badge badge-done">✓ 終了 2026.3.2〜5</span>
+    <div class="card-name">ICC SUMMIT<br>FUKUOKA 2026</div>
+    <div class="card-type">大規模 / エグゼクティブカンファレンス</div>
+    <div class="info-row"><span class="info-label">会場</span><span class="info-val">ヒルトン福岡シーホーク 他</span></div>
+    <div class="links">
+      <div class="link-row"><span class="link-label">TOP</span><a href="https://industry-co-creation.com/events/icc-fukuoka-2026" target="_blank">industry-co-creation.com/events/icc-fukuoka-2026</a></div>
+    </div>
+  </div>
+
+  <div class="card done medium">
+    <span class="status-badge badge-done">✓ 終了 2026.3.3</span>
+    <div class="card-name">JID 2026 /<br>XTC JAPAN 2026</div>
+    <div class="card-type">中規模 / 展示＋ディープテックピッチコンテスト</div>
+    <div class="info-row"><span class="info-label">会場</span><span class="info-val">東京都立産業貿易センター浜松町館</span></div>
+    <div class="links">
+      <div class="link-row"><span class="link-label">TOP</span><a href="https://xtc-japan.org/xtc-japan-2026" target="_blank">xtc-japan.org/xtc-japan-2026</a></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  最終更新：2026年5月 ／ 情報は各公式サイトを必ずご確認ください。日程・申込状況は変更になる場合があります。
+</footer>
+
+</body>
+</html>
